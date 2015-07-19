@@ -24,10 +24,6 @@ func (llist LinkedList) add(newnodeptr *LLNode) {
 	llist.tail = newnodeptr
 }
 
-type llnodeArgError struct {
-	problem string
-}
-
 func (llist LinkedList) at(position int) (*LLNode, error) {
 
 	if position > llist.length-1 || position < 0 {
