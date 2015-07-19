@@ -2,11 +2,24 @@ package go_structures
 
 import (
 	"errors"
+	"fmt"
 )
 
 type LLNode struct {
 	value    int
 	nextNode *LLNode
+}
+
+func (llnode LLNode) Value() int {
+	return llnode.value
+}
+
+func (llnode LLNode) NextNode() *LLNode {
+	return llnode.nextNode
+}
+
+func (llnode LLNode) Members() (int, *LLNode) {
+	return llnode.value, llnode.nextNode
 }
 
 type LinkedList struct {
@@ -15,16 +28,31 @@ type LinkedList struct {
 	length int
 }
 
+func (llist LinkedList) Head() *LLNode {
+	return llist.head
+}
+
+func (llist LinkedList) Tail() *LLNode {
+	return llist.tail
+}
+
+func (llist LinkedList) Length() int {
+	return llist.length
+}
+
+func (llist LinkedList) Members() (*LLNode, *LLNode, int) {
+	return llist.head, llist.tail, llist.length
+}
+
+func NewLLNode(value int) *LLNode {
+	return &LLNode{value, nil}
+}
+
 func NewLinkedList(headptr *LLNode) *LinkedList {
 	return &LinkedList{headptr, headptr, 1}
 }
 
-func (llist LinkedList) add(newnodeptr *LLNode) {
-	llist.tail.nextNode = newnodeptr
-	llist.tail = newnodeptr
-}
-
-func (llist LinkedList) at(position int) (*LLNode, error) {
+func (llist LinkedList) At(position int) (*LLNode, error) {
 
 	if position > llist.length-1 || position < 0 {
 		return nil, errors.New("Index Out of Range")
@@ -40,10 +68,17 @@ func (llist LinkedList) at(position int) (*LLNode, error) {
 	return wantedNodeptr, nil
 }
 
-func (llist LinkedList) delete(position int) error {
+func (llist *LinkedList) Add(newnodeptr *LLNode) {
+	llist.tail.nextNode = newnodeptr
+	llist.tail = newnodeptr
+	llist.length += 1
+}
 
-	wantedNodeptr, e := llist.at(position)
+func (llist *LinkedList) Delete(position int) error {
+
+	wantedNodeptr, e := llist.At(position)
 	if e != nil {
+		fmt.Println(e)
 		return errors.New("Delete Failed: " + e.Error())
 	}
 
@@ -56,7 +91,7 @@ func (llist LinkedList) delete(position int) error {
 		return nil
 	}
 
-	prevNodeptr, e := llist.at(position - 1)
+	prevNodeptr, e := llist.At(position - 1)
 	if e != nil {
 		return errors.New("Delete Failed. Error accessing preceding node. " + e.Error())
 	}
@@ -68,7 +103,7 @@ func (llist LinkedList) delete(position int) error {
 		return nil
 	}
 
-	nextNodeptr, e := llist.at(position + 1)
+	nextNodeptr, e := llist.At(position + 1)
 	if e != nil {
 		return errors.New("Delete Failed. Error accessing following node. " + e.Error())
 	}
