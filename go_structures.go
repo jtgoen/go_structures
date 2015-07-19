@@ -2,7 +2,6 @@ package go_structures
 
 import (
 	"errors"
-	"fmt"
 )
 
 type LLNode struct {
@@ -78,11 +77,10 @@ func (llist *LinkedList) Delete(position int) error {
 
 	wantedNodeptr, e := llist.At(position)
 	if e != nil {
-		fmt.Println(e)
 		return errors.New("Delete Failed: " + e.Error())
 	}
 
-	if position == 0 {
+	if wantedNodeptr == llist.head {
 		llist.head = wantedNodeptr.nextNode
 		wantedNodeptr = nil
 		if llist.length > 0 {
