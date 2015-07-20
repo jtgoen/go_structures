@@ -2,6 +2,7 @@ package go_structures
 
 import (
 	"errors"
+	"strconv"
 )
 
 type LLNode struct {
@@ -51,6 +52,17 @@ func NewLinkedList(headptr *LLNode) *LinkedList {
 	return &LinkedList{headptr, headptr, 1}
 }
 
+func (llist LinkedList) Nodes() []LLNode {
+	nodes := make([]LLNode, 0, llist.length)
+
+	currentNodeptr := llist.head
+	for i := 0; i < llist.length; i++ {
+		nodes = append(nodes, *currentNodeptr)
+		currentNodeptr = currentNodeptr.nextNode
+	}
+	return nodes
+}
+
 func (llist LinkedList) At(position int) (*LLNode, error) {
 
 	if position > llist.length-1 || position < 0 {
@@ -71,6 +83,26 @@ func (llist *LinkedList) Add(newnodeptr *LLNode) {
 	llist.tail.nextNode = newnodeptr
 	llist.tail = newnodeptr
 	llist.length += 1
+}
+
+func (llist *LinkedList) Insert(newnodeptr *LLNode, position int) error {
+
+	insertionNodeptr, e := llist.At(position)
+	if e != nil {
+		return errors.New("Insertion Failed. error accessing node at position " +
+			strconv.Itoa(position) + " " + e.Error())
+	}
+
+	prevNodeptr, e := llist.At(position - 1)
+	if e != nil {
+		return errors.New("Insertion Failed. error accessing node at position " +
+			strconv.Itoa(position) + e.Error())
+	}
+
+	newnodeptr.nextNode = insertionNodeptr
+	prevNodeptr.nextNode = newnodeptr
+	llist.length += 1
+	return nil
 }
 
 func (llist *LinkedList) Delete(position int) error {
